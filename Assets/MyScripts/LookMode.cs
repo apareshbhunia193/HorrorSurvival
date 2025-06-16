@@ -9,6 +9,7 @@ public class LookMode : MonoBehaviour
     [SerializeField] PostProcessProfile standard;
     [SerializeField] PostProcessProfile nightVision;
     [SerializeField] GameObject nightVisionOverlay;
+    [SerializeField] NightVisionScript nightVisionScript;
 
     private bool nightVisionOn = false;
 
@@ -31,14 +32,31 @@ public class LookMode : MonoBehaviour
                 nightVisionOverlay.SetActive(true);
                 vol.profile = nightVision;
                 nightVisionOn = true;
+                ChangeToStandardLookMode();
+
             }
-            else if(nightVisionOn)
+            else if (nightVisionOn)
             {
                 this.gameObject.GetComponent<Camera>().fieldOfView = 60;
                 nightVisionOverlay.SetActive(false);
                 vol.profile = standard;
                 nightVisionOn = false;
             }
+        }
+        if (nightVision)
+        {
+            ChangeToStandardLookMode();
+        }
+    }
+
+    void ChangeToStandardLookMode()
+    {
+        if (nightVisionScript.BatteryPower <= 0)
+        { 
+            gameObject.GetComponent<Camera>().fieldOfView = 60;
+            nightVisionOverlay.SetActive(false);
+            vol.profile = standard;
+            nightVisionOn = false;
         }
     }
 }
