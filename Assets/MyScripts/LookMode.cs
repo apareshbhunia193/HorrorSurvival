@@ -10,9 +10,15 @@ public class LookMode : MonoBehaviour
     [SerializeField] PostProcessProfile nightVision;
     [SerializeField] GameObject nightVisionOverlay;
     [SerializeField] NightVisionScript nightVisionScript;
+    [SerializeField] GameObject flashLight;
+    [SerializeField] FlashLightScript flashLightScript;
+    [SerializeField] GameObject flashLightOverlay;
 
     private bool nightVisionOn = false;
+    private bool flashLightOn = false;
 
+    public bool IsNightVisionOn { get { return nightVisionOn; } }
+    public bool IsFlashLightIsOn { get { return flashLightOn; } }
 
     // Start is called before the first frame update
     void Start()
@@ -20,6 +26,8 @@ public class LookMode : MonoBehaviour
         vol = GetComponent<PostProcessVolume>();
         nightVisionOverlay.SetActive(false);
         vol.profile = standard;
+        flashLight.SetActive(false);
+        flashLightOverlay.SetActive(false);
     }
 
     // Update is called once per frame
@@ -43,20 +51,51 @@ public class LookMode : MonoBehaviour
                 nightVisionOn = false;
             }
         }
-        if (nightVision)
+
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            if (!flashLightOn)
+            {
+                flashLight.SetActive(true);
+                flashLightOverlay.SetActive(true);
+                flashLightOn = true;
+            }
+            else
+            {
+                flashLight.SetActive(false);
+                flashLightOverlay.SetActive(false);
+                flashLightOn = false;
+            }
+        }
+
+        if (nightVisionOn)
         {
             ChangeToStandardLookMode();
+        }
+        if (flashLightOn)
+        {
+            CheckFlashLightPower();
         }
     }
 
     void ChangeToStandardLookMode()
     {
         if (nightVisionScript.BatteryPower <= 0)
-        { 
+        {
             gameObject.GetComponent<Camera>().fieldOfView = 60;
             nightVisionOverlay.SetActive(false);
             vol.profile = standard;
             nightVisionOn = false;
+        }
+    }
+
+    void CheckFlashLightPower()
+    {
+        if (flashLightScript.BatteryPower <= 0)
+        {
+            flashLight.SetActive(false);
+            flashLightOverlay.SetActive(false);
+            flashLightOn = false;
         }
     }
 }

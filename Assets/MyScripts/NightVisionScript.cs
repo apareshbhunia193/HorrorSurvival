@@ -13,6 +13,8 @@ public class NightVisionScript : MonoBehaviour
     [SerializeField] float batteryPower = 1.0f;
     [SerializeField] float drainTime = 2.0f;
 
+    [SerializeField] LookMode lookMode;
+
     public float BatteryPower { get { return batteryPower; } }
     // Start is called before the first frame update
     void Start()
@@ -53,9 +55,12 @@ public class NightVisionScript : MonoBehaviour
 
     private void BatteryDrain()
     {
-        if (batteryPower > 0)
+        if (lookMode.IsNightVisionOn)
         {
-            batteryPower -= 0.25f;
+            if (batteryPower > 0)
+            {
+                batteryPower -= 0.25f;
+            }
         }
     }
 }
